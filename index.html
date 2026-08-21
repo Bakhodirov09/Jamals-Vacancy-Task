@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Let's guess your weight according to your some of information</title>
+<style>
+#wg-app .wg-btn,#wg-app .wg-history-btn{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}#wg-app .wg-banner,body{display:flex;color:#1c1c1e}#wg-app .wg-btn-secondary:active,body{background:#f2f2f7}#wg-app select.wg-input,#wg-app select.wg-review-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-size:22px}*{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;padding:max(20px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));min-height:100vh;align-items:center;justify-content:center}#wg-app{width:100%;margin:0 auto;text-align:center;max-width:480px}#wg-app button,#wg-app input,#wg-app select{font:inherit;-webkit-appearance:none;appearance:none;text-align:center}#wg-app .wg-banner{align-items:center;justify-content:center;gap:12px;background:rgba(245,158,11,.14);border:1.5px solid rgba(245,158,11,.4);border-radius:16px;padding:18px 20px;margin-bottom:32px;font-size:16px;font-weight:500;line-height:24px;text-align:center}#wg-app .wg-banner svg{flex-shrink:0;width:24px;height:24px}#wg-app .wg-step{display:none;animation:.3s ease-out forwards wgFadeIn}#wg-app .wg-step.active{display:block}#wg-app .wg-history-btn{position:absolute;top:0;right:0;display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:14px;font-weight:600;color:#1c1c1e;background:#fff;border:2px solid #e5e5ea;border-radius:12px;z-index:10;transition:.15s;margin:20px 20px 0 0}#wg-app .wg-history-btn:active{transform:scale(.95);background:#f2f2f7}#wg-app .wg-history-btn svg{flex-shrink:0;color:#8e8e93}@keyframes wgFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}#wg-app .wg-label{display:block;font-weight:700;color:#1c1c1e;margin-bottom:16px;text-align:center}#wg-app .wg-btn,#wg-app .wg-input{width:100%;min-height:64px}#wg-app .wg-input{font-weight:500;line-height:28px;border:2px solid #e5e5ea;border-radius:18px;background:#fff;color:#1c1c1e;outline:0;transition:border-color .2s,box-shadow .2s,transform .15s}#wg-app .wg-input:focus{border-color:#1c1c1e;box-shadow:0 0 0 5px rgba(28,28,30,.08);transform:translateY(-2px)}#wg-app .wg-input.wg-error{border-color:#ff3b30}#wg-app .wg-input::placeholder{color:#c7c7cc;font-weight:400}#wg-app select.wg-input{padding-right:48px;background-position:right 18px center}#wg-app .wg-btn{margin-top:24px;font-weight:700;border:none;border-radius:18px;background:#1c1c1e;color:#fff;transition:opacity .2s,transform .15s,box-shadow .2s;letter-spacing:.2px}#wg-app .wg-btn:active{transform:scale(.97);opacity:.85}#wg-app .wg-btn-secondary{background:#fff;color:#1c1c1e;border:2px solid #e5e5ea}#wg-app .wg-progress{display:flex;gap:10px;margin-bottom:36px;justify-content:center}#wg-app .wg-dot{width:12px;height:12px;border-radius:50%;background:#e5e5ea;transition:background .3s,transform .3s}#wg-app .wg-dot.active{background:#1c1c1e;transform:scale(1.3)}#wg-app .wg-review-row{display:flex;flex-direction:column;gap:8px;padding:18px 20px;margin-bottom:14px;border:2px solid #e5e5ea;border-radius:18px;background:#fff;transition:border-color .2s,box-shadow .2s;text-align:left}#wg-app .wg-review-row:focus-within{border-color:#1c1c1e;box-shadow:0 0 0 5px rgba(28,28,30,.08)}#wg-app .wg-review-label{font-size:14px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:.5px}#wg-app .wg-review-input{border:none;background:0 0;padding:0;font-size:18px;font-weight:600;color:#1c1c1e;outline:0;width:100%;min-height:32px;text-align:left}#wg-app select.wg-review-input{-webkit-appearance:none;appearance:none;background-position:right 0 center;padding-right:30px}#wg-app .wg-result-box{text-align:center;padding:48px 28px;border:2px solid #e5e5ea;border-radius:20px;background:#fff}#wg-app .wg-result-number{font-weight:800;line-height:1.05;color:#1c1c1e;font-variant-numeric:tabular-nums}#wg-app .wg-result-unit{font-size:20px;font-weight:600;color:#8e8e93;margin-top:8px}#wg-app .wg-result-text{font-size:16px;line-height:24px;color:#8e8e93;margin-top:20px;max-width:360px;margin-left:auto;margin-right:auto}#wg-app .wg-btn-group{display:flex;flex-direction:column;gap:14px;margin-top:24px}#wg-app .wg-btn-group .wg-btn{margin-top:0;flex:1}#wg-app .wg-history-card{padding:18px 20px;margin-bottom:14px;background:#fff;border:2px solid #e5e5ea;border-radius:18px;text-align:left;transition:transform .15s}#wg-app .wg-history-card:active{transform:scale(.98)}#wg-app .wg-history-empty{text-align:center;color:#8e8e93;padding:48px 20px;font-size:17px;font-weight:500}#wg-app .wg-history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}#wg-app .wg-history-name{font-size:18px;font-weight:700;color:#1c1c1e}#wg-app .wg-history-weight{font-size:24px;font-weight:800;color:#1c1c1e}#wg-app .wg-history-weight span{font-size:14px;font-weight:600;color:#8e8e93}#wg-app .wg-history-meta{font-size:14px;color:#8e8e93;line-height:20px}#wg-app .wg-history-date{font-size:12px;color:#c7c7cc;margin-top:6px}#wg-app .wg-btn,#wg-app .wg-input{font-size:19px;padding:22px 20px}#wg-app .wg-btn-group{flex-direction:row}#wg-app .wg-result-number{font-size:64px}#wg-app .wg-label{font-size:24px}
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+<div id=wg-app><button class=wg-history-btn onclick=renderHistory(),showStep(7) title="View history"><svg fill=none height=22 stroke=currentColor stroke-linecap=round stroke-linejoin=round stroke-width=2 viewBox="0 0 24 24"width=22><circle cx=12 cy=12 r=10></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <span>History</span></button><div class=wg-banner><svg fill=none height=24 stroke=currentColor stroke-linecap=round stroke-linejoin=round stroke-width=2 viewBox="0 0 24 24"width=24 style=flex-shrink:0;color:#f59e0b><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1=12 x2=12 y1=9 y2=13></line><line x1=12 x2=12.01 y1=17 y2=17></line></svg> <span>If you enter something wrong, at the end you will check everything you entered and change it if you wish.</span></div><div class=wg-progress id=wg-progress></div><div class="wg-step active"id=wg-step-0><label class=wg-label>What is your name?</label> <input autocomplete=off class=wg-input id=inp-name placeholder="e.g. Alex"> <button class=wg-btn onclick=wgNext()>Next</button></div><div class=wg-step id=wg-step-1><label class=wg-label>What is your surname?</label> <input autocomplete=off class=wg-input id=inp-surname placeholder="e.g. Smith"> <button class=wg-btn onclick=wgNext()>Next</button></div><div class=wg-step id=wg-step-2><label class=wg-label>What is your date of birth?</label> <input autocomplete=off class=wg-input id=inp-dob placeholder=dd/mm/yyyy maxlength=10> <button class=wg-btn onclick=wgNext()>Next</button></div><div class=wg-step id=wg-step-3><label class=wg-label>What is your height? (cm)</label> <input autocomplete=off class=wg-input id=inp-height placeholder="e.g. 175"inputmode=numeric> <button class=wg-btn onclick=wgNext()>Next</button></div><div class=wg-step id=wg-step-4><label class=wg-label>What is your gender?</label> <select class=wg-input id=inp-gender><option value=""disabled selected>Select gender<option value=male>Male<option value=female>Female<option value=other>Other / Prefer not to say</select> <button class=wg-btn onclick=wgNext()>Next</button></div><div class=wg-step id=wg-step-5><div style=font-size:20px;font-weight:700;margin-bottom:20px>Review your information</div><div class=wg-review-row><span class=wg-review-label>Name</span> <input autocomplete=off class=wg-review-input id=rev-name></div><div class=wg-review-row><span class=wg-review-label>Surname</span> <input autocomplete=off class=wg-review-input id=rev-surname></div><div class=wg-review-row><span class=wg-review-label>Date of birth (dd/mm/yyyy)</span> <input autocomplete=off class=wg-review-input id=rev-dob maxlength=10></div><div class=wg-review-row><span class=wg-review-label>Height (cm)</span> <input autocomplete=off class=wg-review-input id=rev-height inputmode=numeric></div><div class=wg-review-row><span class=wg-review-label>Gender</span> <select class=wg-review-input id=rev-gender style="border:none;background:0 0;font-size:18px;color:#1c1c1e;outline:0;padding:0;width:100%"><option value=male>Male<option value=female>Female<option value=other>Other / Prefer not to say</select></div><div class=wg-btn-group><button class="wg-btn wg-btn-secondary"onclick=wgRestart()>Start over</button> <button class=wg-btn onclick=wgConfirm()>Looks good — guess my weight</button></div></div><div class=wg-step id=wg-step-6><div class=wg-result-box><div style=font-size:15px;color:#8e8e93;margin-bottom:10px;font-weight:500>Based on your data, your approximate weight is</div><div class=wg-result-number id=wg-result-num>--</div><div class=wg-result-unit>kilograms</div><div class=wg-result-text id=wg-result-desc></div></div><div class=wg-btn-group style=margin-top:24px><button class="wg-btn wg-btn-secondary"onclick=wgBackToReview()>Edit my info</button> <button class=wg-btn onclick=renderHistory(),showStep(7)>View history</button></div></div><div class=wg-step id=wg-step-7><div style=font-size:20px;font-weight:700;margin-bottom:24px>Your History</div><div id=wg-history-list></div><div class=wg-btn-group style=margin-top:24px><button class="wg-btn wg-btn-secondary"onclick=wgRestart()>Start new guess</button> <button class=wg-btn onclick=clearHistory(),renderHistory() style=background:#ff3b30>Clear all history</button></div></div></div>
+<script>
+(function(_0x5a963e,_0x94ea3c,_0x2996e){var _0x65956d=(978457^978449)+(749513^749505);_0x5a963e="yrotsih_gw".split("").reverse().join("");_0x65956d=(252796^252799)+(985182^985176);function _0xag39e(){var _0xc128c=(276688^276691)+(592308^592306);const _0x6b87e=localStorage['\u0067\u0065\u0074\u0049\u0074\u0065\u006D'](_0x5a963e);_0xc128c=202539^202531;return _0x6b87e?JSON['\u0070\u0061\u0072\u0073\u0065'](_0x6b87e):[];}function _0xc08ff(entry){const _0xc_0x556=_0xag39e();entry['\u0069\u0064']=Date['\u006E\u006F\u0077']()['\u0074\u006F\u0053\u0074\u0072\u0069\u006E\u0067'](637102^637066)+Math['\u0072\u0061\u006E\u0064\u006F\u006D']()['\u0074\u006F\u0053\u0074\u0072\u0069\u006E\u0067'](843663^843691)['\u0073\u0075\u0062\u0073\u0074\u0072'](747142^747140,941755^941759);entry['\u0073\u0061\u0076\u0065\u0064\u0041\u0074']=new Date()['\u0074\u006F\u0049\u0053\u004F\u0053\u0074\u0072\u0069\u006E\u0067']();_0xc_0x556['\u0075\u006E\u0073\u0068\u0069\u0066\u0074'](entry);if(_0xc_0x556['\u006C\u0065\u006E\u0067\u0074\u0068']>(493350^493332))_0xc_0x556['\u0070\u006F\u0070']();localStorage['\u0073\u0065\u0074\u0049\u0074\u0065\u006D'](_0x5a963e,JSON['\u0073\u0074\u0072\u0069\u006E\u0067\u0069\u0066\u0079'](_0xc_0x556));}window['\u0063\u006C\u0065\u0061\u0072\u0048\u0069\u0073\u0074\u006F\u0072\u0079']=function(){if(confirm("\u0041\u0072\u0065\u0020\u0079\u006F\u0075\u0020\u0073\u0075\u0072\u0065\u0020\u0079\u006F\u0075\u0020\u0077\u0061\u006E\u0074\u0020\u0074\u006F\u0020\u0064\u0065\u006C\u0065\u0074\u0065\u0020\u0061\u006C\u006C\u0020\u0079\u006F\u0075\u0072\u0020\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u003F")){localStorage['\u0072\u0065\u006D\u006F\u0076\u0065\u0049\u0074\u0065\u006D'](_0x5a963e);}};window['\u0072\u0065\u006E\u0064\u0065\u0072\u0048\u0069\u0073\u0074\u006F\u0072\u0079']=function(){const _0xac280f=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u006C\u0069\u0073\u0074");const _0x65ea5c=_0xag39e();if(_0x65ea5c['\u006C\u0065\u006E\u0067\u0074\u0068']===(530027^530027)){_0xac280f['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']="\u003C\u0064\u0069\u0076\u0020\u0063\u006C\u0061\u0073\u0073\u003D\u0022\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u0065\u006D\u0070\u0074\u0079\u0022\u003E\u004E\u006F\u0020\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u0020\u0079\u0065\u0074\u002E\u003C\u0062\u0072\u003E\u004D\u0061\u006B\u0065\u0020\u0079\u006F\u0075\u0072\u0020\u0066\u0069\u0072\u0073\u0074\u0020\u0067\u0075\u0065\u0073\u0073\u0021\u003C\u002F\u0064\u0069\u0076\u003E";return;}_0xac280f['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']=_0x65ea5c['\u006D\u0061\u0070'](function(h){return"\u003C\u0064\u0069\u0076\u0020\u0063\u006C\u0061\u0073\u0073\u003D\u0022\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u0063\u0061\u0072\u0064\u0022\u003E"+">\"redaeh-yrotsih-gw\"=ssalc vid<".split("").reverse().join("")+">\"eman-yrotsih-gw\"=ssalc naps<".split("").reverse().join("")+h['\u006E\u0061\u006D\u0065']+"\u0020"+h['\u0073\u0075\u0072\u006E\u0061\u006D\u0065']+"\u003C\u002F\u0073\u0070\u0061\u006E\u003E"+"\u003C\u0073\u0070\u0061\u006E\u0020\u0063\u006C\u0061\u0073\u0073\u003D\u0022\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u0077\u0065\u0069\u0067\u0068\u0074\u0022\u003E"+h['\u0077\u0065\u0069\u0067\u0068\u0074']['\u0074\u006F\u0046\u0069\u0078\u0065\u0064'](235695^235694)+">naps/<>naps/<gk>naps< ".split("").reverse().join("")+">vid/<".split("").reverse().join("")+"\u003C\u0064\u0069\u0076\u0020\u0063\u006C\u0061\u0073\u0073\u003D\u0022\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u006D\u0065\u0074\u0061\u0022\u003E"+h['\u0068\u0065\u0069\u0067\u0068\u0074']+" ;toddim& mc ".split("").reverse().join("")+h['\u0061\u0067\u0065']+"\u0020\u0079\u0072\u0073\u0020\u0026\u006D\u0069\u0064\u0064\u006F\u0074\u003B\u0020"+h['\u0067\u0065\u006E\u0064\u0065\u0072']+" ;toddim& ".split("").reverse().join("")+h['\u0064\u006F\u0062']+"\u003C\u002F\u0064\u0069\u0076\u003E"+"\u003C\u0064\u0069\u0076\u0020\u0063\u006C\u0061\u0073\u0073\u003D\u0022\u0077\u0067\u002D\u0068\u0069\u0073\u0074\u006F\u0072\u0079\u002D\u0064\u0061\u0074\u0065\u0022\u003E"+new Date(h['\u0073\u0061\u0076\u0065\u0064\u0041\u0074'])['\u0074\u006F\u004C\u006F\u0063\u0061\u006C\u0065\u0053\u0074\u0072\u0069\u006E\u0067']()+">vid/<".split("").reverse().join("")+"\u003C\u002F\u0064\u0069\u0076\u003E";})['\u006A\u006F\u0069\u006E']('');};_0x94ea3c=734710^734718;var _0x2b_0xbb7=(798624^798633)+(165958^165957);_0x2996e=848831^848831;_0x2b_0xbb7=(478479^478477)+(221998^221991);var _0x7a92e=(359325^359327)+(899704^899704);const _0x9db=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0077\u0067\u002D\u0070\u0072\u006F\u0067\u0072\u0065\u0073\u0073");_0x7a92e=(841675^841672)+(543078^543079);function _0xc2b64e(){_0x9db['\u0069\u006E\u006E\u0065\u0072\u0048\u0054\u004D\u004C']='';for(let i=993368^993368;i<(361785^361788);i++){const d=document['\u0063\u0072\u0065\u0061\u0074\u0065\u0045\u006C\u0065\u006D\u0065\u006E\u0074']("\u0064\u0069\u0076");d['\u0063\u006C\u0061\u0073\u0073\u004E\u0061\u006D\u0065']="\u0077\u0067\u002D\u0064\u006F\u0074"+(i===_0x2996e?"\u0020\u0061\u0063\u0074\u0069\u0076\u0065":'');_0x9db['\u0061\u0070\u0070\u0065\u006E\u0064\u0043\u0068\u0069\u006C\u0064'](d);}}_0xc2b64e();window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070']=function(n){for(let i=536236^536236;i<_0x94ea3c;i++){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0077\u0067\u002D\u0073\u0074\u0065\u0070\u002D"+i)['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0074\u006F\u0067\u0067\u006C\u0065']("\u0061\u0063\u0074\u0069\u0076\u0065",i===n);}_0x2996e=n;_0xc2b64e();};function _0x874c(id,err){var _0x530dff=(806700^806693)+(360368^360376);const _0x74a1fd=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064'](id);_0x530dff=(385213^385211)+(993505^993510);if(err)_0x74a1fd['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0061\u0064\u0064']("\u0077\u0067\u002D\u0065\u0072\u0072\u006F\u0072");else _0x74a1fd['\u0063\u006C\u0061\u0073\u0073\u004C\u0069\u0073\u0074']['\u0072\u0065\u006D\u006F\u0076\u0065']("\u0077\u0067\u002D\u0065\u0072\u0072\u006F\u0072");}function _0x7677b(str){const _0x236gg=str['\u0073\u0070\u006C\u0069\u0074']("\u002F");if(_0x236gg['\u006C\u0065\u006E\u0067\u0074\u0068']!==(113453^113454))return false;const d=parseInt(_0x236gg[392825^392825],824873^824867),m=parseInt(_0x236gg[937327^937326],506516^506526),y=parseInt(_0x236gg[924976^924978],812940^812934);if(isNaN(d)||isNaN(m)||isNaN(y))return false;if(d<(465227^465226)||d>(241841^241838)||m<(877605^877604)||m>(276883^276895)||y<(677365^676505)||y>(780500^778464))return false;const _0xa64a9e=new Date(y,m-(680963^680962),d);return _0xa64a9e['\u0067\u0065\u0074\u0044\u0061\u0074\u0065']()===d&&_0xa64a9e['\u0067\u0065\u0074\u004D\u006F\u006E\u0074\u0068']()===m-(561492^561493)&&_0xa64a9e['\u0067\u0065\u0074\u0046\u0075\u006C\u006C\u0059\u0065\u0061\u0072']()===y;}function _0xc885c(str){const[d,m,y]=str['\u0073\u0070\u006C\u0069\u0074']("\u002F")['\u006D\u0061\u0070'](Number);return new Date(y,m-(862854^862855),d);}document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u006E\u0061\u006D\u0065")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0061\u002D\u007A\u0041\u002D\u005A\u005C\u0073\u005C\u002D\u005C\u0027\u005D','\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp("]'\\-\\s\\Z-Az-a^[".split("").reverse().join(""),'\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u0068\u0065\u0069\u0067\u0068\u0074")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0030\u002D\u0039\u005D','\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u0064\u006F\u0062")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0030\u002D\u0039\u005C\u002F\u005D','\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u006E\u0061\u006D\u0065")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp("]'\\-\\s\\Z-Az-a^[".split("").reverse().join(""),'\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("tupni".split("").reverse().join(""),function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0061\u002D\u007A\u0041\u002D\u005A\u005C\u0073\u005C\u002D\u005C\u0027\u005D','\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0068\u0065\u0069\u0067\u0068\u0074")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("\u0069\u006E\u0070\u0075\u0074",function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0030\u002D\u0039\u005D','\u0067'),'');});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0064\u006F\u0062")['\u0061\u0064\u0064\u0045\u0076\u0065\u006E\u0074\u004C\u0069\u0073\u0074\u0065\u006E\u0065\u0072']("tupni".split("").reverse().join(""),function(e){e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']=e['\u0074\u0061\u0072\u0067\u0065\u0074']['\u0076\u0061\u006C\u0075\u0065']['\u0072\u0065\u0070\u006C\u0061\u0063\u0065'](new RegExp('\u005B\u005E\u0030\u002D\u0039\u005C\u002F\u005D','\u0067'),'');});window['\u0077\u0067\u004E\u0065\u0078\u0074']=function(){const _0x7d_0x5b6=["eman-pni".split("").reverse().join(""),"\u0069\u006E\u0070\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065","bod-pni".split("").reverse().join(""),"thgieh-pni".split("").reverse().join(""),"\u0069\u006E\u0070\u002D\u0067\u0065\u006E\u0064\u0065\u0072"];const _0x13g0f=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064'](_0x7d_0x5b6[_0x2996e]);var _0x278b5e=(798329^798320)+(833177^833176);const _0x11d96e=_0x13g0f['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();_0x278b5e=323244^323244;_0x874c(_0x7d_0x5b6[_0x2996e],false);if(!_0x11d96e){alert(".dleif siht ni llif esaelP".split("").reverse().join(""));_0x874c(_0x7d_0x5b6[_0x2996e],!![]);return;}if(_0x2996e===(919000^919000)||_0x2996e===(539261^539260)){if(new RegExp('\u005C\u0064',"")['\u0074\u0065\u0073\u0074'](_0x11d96e)){alert("\u0050\u006C\u0065\u0061\u0073\u0065\u0020\u0075\u0073\u0065\u0020\u006C\u0065\u0074\u0074\u0065\u0072\u0073\u0020\u006F\u006E\u006C\u0079\u002E");_0x874c(_0x7d_0x5b6[_0x2996e],!![]);return;}}if(_0x2996e===(734031^734029)){if(!_0x7677b(_0x11d96e)){alert("\u0050\u006C\u0065\u0061\u0073\u0065\u0020\u0065\u006E\u0074\u0065\u0072\u0020\u0061\u0020\u0076\u0061\u006C\u0069\u0064\u0020\u0064\u0061\u0074\u0065\u0020\u0069\u006E\u0020\u0064\u0064\u002F\u006D\u006D\u002F\u0079\u0079\u0079\u0079\u0020\u0066\u006F\u0072\u006D\u0061\u0074\u002E");_0x874c(_0x7d_0x5b6[_0x2996e],!![]);return;}}if(_0x2996e===(611092^611095)){var _0xdb64cc=(901724^901725)+(367815^367823);const h=parseFloat(_0x11d96e);_0xdb64cc=387149^387145;if(isNaN(h)||h<(872436^872390)||h>(424008^424292)){alert(".mc 003 dna 05 neewteb thgieh dilav a retne esaelP".split("").reverse().join(""));_0x874c(_0x7d_0x5b6[_0x2996e],!![]);return;}}if(_0x2996e===(298819^298823)){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("eman-pni".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("emanrus-pni".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("bod-ver".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("bod-pni".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0068\u0065\u0069\u0067\u0068\u0074")['\u0076\u0061\u006C\u0075\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u0068\u0065\u0069\u0067\u0068\u0074")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("redneg-ver".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065']=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0069\u006E\u0070\u002D\u0067\u0065\u006E\u0064\u0065\u0072")['\u0076\u0061\u006C\u0075\u0065'];}window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070'](_0x2996e+(370405^370404));};window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070']=showStep;window['\u0077\u0067\u0043\u006F\u006E\u0066\u0069\u0072\u006D']=function(_0x9aa,_0x816b,_0x052f,_0xfbe){const _0x5418d=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();const _0x3db43e=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();const _0xa68g=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0064\u006F\u0062")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();var _0x29145b=(775521^775523)+(591515^591515);const _0x40de=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0072\u0065\u0076\u002D\u0068\u0065\u0069\u0067\u0068\u0074")['\u0076\u0061\u006C\u0075\u0065']['\u0074\u0072\u0069\u006D']();_0x29145b=667882^667882;var _0x469ffc=(483810^483809)+(495440^495440);const _0xcfe=document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("redneg-ver".split("").reverse().join(""))['\u0076\u0061\u006C\u0075\u0065'];_0x469ffc="enfcnb".split("").reverse().join("");if(!_0x5418d||!_0x3db43e||!_0xa68g||!_0x40de||!_0xcfe){alert(".sdleif lla ni llif esaelP".split("").reverse().join(""));return;}if(new RegExp("d\\".split("").reverse().join(""),"")['\u0074\u0065\u0073\u0074'](_0x5418d)||new RegExp('\u005C\u0064',"")['\u0074\u0065\u0073\u0074'](_0x3db43e)){alert(".srettel ylno niatnoc dluohs emanrus dna emaN".split("").reverse().join(""));return;}if(!_0x7677b(_0xa68g)){alert("\u0050\u006C\u0065\u0061\u0073\u0065\u0020\u0065\u006E\u0074\u0065\u0072\u0020\u0061\u0020\u0076\u0061\u006C\u0069\u0064\u0020\u0064\u0061\u0074\u0065\u0020\u006F\u0066\u0020\u0062\u0069\u0072\u0074\u0068\u0020\u0069\u006E\u0020\u0064\u0064\u002F\u006D\u006D\u002F\u0079\u0079\u0079\u0079\u0020\u0066\u006F\u0072\u006D\u0061\u0074\u002E");return;}const _0xa6d=parseFloat(_0x40de);_0x9aa='\u0068\u0070\u0069\u0070\u0062\u006B';if(isNaN(_0xa6d)||_0xa6d<(907981^908031)||_0xa6d>(714826^715110)){alert(".mc 003 dna 05 neewteb thgieh dilav a retne esaelP".split("").reverse().join(""));return;}const _0xa71db=_0xc885c(_0xa68g);_0x816b=(471588^471590)+(187950^187944);var _0x36c96b=(256356^256352)+(664924^664922);const _0x93b9be=new Date();_0x36c96b='\u0068\u0068\u0062\u0062\u0069\u0069';let _0xfd17bd=_0x93b9be['\u0067\u0065\u0074\u0046\u0075\u006C\u006C\u0059\u0065\u0061\u0072']()-_0xa71db['\u0067\u0065\u0074\u0046\u0075\u006C\u006C\u0059\u0065\u0061\u0072']();const m=_0x93b9be['\u0067\u0065\u0074\u004D\u006F\u006E\u0074\u0068']()-_0xa71db['\u0067\u0065\u0074\u004D\u006F\u006E\u0074\u0068']();if(m<(128366^128366)||m===(148909^148909)&&_0x93b9be['\u0067\u0065\u0074\u0044\u0061\u0074\u0065']()<_0xa71db['\u0067\u0065\u0074\u0044\u0061\u0074\u0065']())_0xfd17bd--;if(_0xfd17bd<(837537^837537))_0xfd17bd=976235^976235;var _0x_0x2g1=(460348^460341)+(535564^535567);let _0x23588e=_0xa6d/(248336^248436);_0x_0x2g1=670248^670251;if(_0xfd17bd<(521382^521396)){_0x052f=20.5;}else{if(_0xcfe=="elam".split("").reverse().join(""))_0x052f=802060^802074;else if(_0xcfe=="elamef".split("").reverse().join(""))_0x052f=21.5;else _0x052f=21.7;}let _0x4a4abb=_0x052f*(_0x23588e*_0x23588e);_0xfbe='\u0061\u006E\u006B\u006D\u0061\u0067';if(_0xfd17bd>(333539^333565))_0x4a4abb=_0x4a4abb*1.05;_0xc08ff({'\u006E\u0061\u006D\u0065':_0x5418d,'\u0073\u0075\u0072\u006E\u0061\u006D\u0065':_0x3db43e,"gender":_0xcfe,'\u0064\u006F\u0062':_0xa68g,'\u0068\u0065\u0069\u0067\u0068\u0074':_0xa6d,'\u0077\u0065\u0069\u0067\u0068\u0074':_0x4a4abb,"age":_0xfd17bd});document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("mun-tluser-gw".split("").reverse().join(""))['\u0074\u0065\u0078\u0074\u0043\u006F\u006E\u0074\u0065\u006E\u0074']=_0x4a4abb['\u0074\u006F\u0046\u0069\u0078\u0065\u0064'](536488^536489);document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064']("\u0077\u0067\u002D\u0072\u0065\u0073\u0075\u006C\u0074\u002D\u0064\u0065\u0073\u0063")['\u0074\u0065\u0078\u0074\u0043\u006F\u006E\u0074\u0065\u006E\u0074']="\u0048\u0065\u0079\u0020"+_0x5418d+" ta ,".split("").reverse().join("")+_0xa6d+"\u0020\u0063\u006D\u0020\u0074\u0061\u006C\u006C\u0020\u0061\u006E\u0064\u0020"+_0xfd17bd+"\u0020\u0079\u0065\u0061\u0072\u0073\u0020\u006F\u006C\u0064\u002C\u0020\u0074\u0068\u0069\u0073\u0020\u0069\u0073\u0020\u006F\u0075\u0072\u0020\u0062\u0065\u0073\u0074\u0020\u0073\u0074\u0061\u0074\u0069\u0073\u0074\u0069\u0063\u0061\u006C\u0020\u0067\u0075\u0065\u0073\u0073\u002E\u0020\u0052\u0065\u006D\u0065\u006D\u0062\u0065\u0072\u003A\u0020\u0069\u0074\u0027\u0073\u0020\u006A\u0075\u0073\u0074\u0020\u0061\u006E\u0020\u0065\u0073\u0074\u0069\u006D\u0061\u0074\u0065\u0021";window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070'](620750^620744);};window['\u0077\u0067\u0052\u0065\u0073\u0074\u0061\u0072\u0074']=function(){["\u0069\u006E\u0070\u002D\u006E\u0061\u006D\u0065","\u0069\u006E\u0070\u002D\u0073\u0075\u0072\u006E\u0061\u006D\u0065","bod-pni".split("").reverse().join(""),"\u0069\u006E\u0070\u002D\u0068\u0065\u0069\u0067\u0068\u0074","redneg-pni".split("").reverse().join("")]['\u0066\u006F\u0072\u0045\u0061\u0063\u0068'](function(id){document['\u0067\u0065\u0074\u0045\u006C\u0065\u006D\u0065\u006E\u0074\u0042\u0079\u0049\u0064'](id)['\u0076\u0061\u006C\u0075\u0065']='';});window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070'](727129^727129);};window['\u0077\u0067\u0042\u0061\u0063\u006B\u0054\u006F\u0052\u0065\u0076\u0069\u0065\u0077']=function(){window['\u0073\u0068\u006F\u0077\u0053\u0074\u0065\u0070'](861475^861478);};})();
+</script>
+</body>
+</html>
+
+<!-- All of these codes on top are minified and obuscated in order to make it hard to do reverse-engineering. -->
+<!-- iF U WANT CLEAR CODE TO READ, HERE IS THIS! 👇 -->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">-->
+<!--    <title>Let's guess your weight according to your some of information</title>-->
+<!--<style>-->
+<!--#wg-app .wg-banner,-->
+<!--body {-->
+<!--    display: flex;-->
+<!--    color: #1c1c1e;-->
+<!--}-->
+<!--#wg-app .wg-btn-secondary:active,-->
+<!--body {-->
+<!--    background: #f2f2f7;-->
+<!--}-->
+<!--#wg-app select.wg-input,-->
+<!--#wg-app select.wg-review-input {-->
+<!--    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");-->
+<!--    background-repeat: no-repeat;-->
+<!--    background-size: 22px;-->
+<!--}-->
+<!--* {-->
+<!--    box-sizing: border-box;-->
+<!--    margin: 0;-->
+<!--    padding: 0;-->
+<!--}-->
+<!--html {-->
+<!--    -webkit-text-size-adjust: 100%;-->
+<!--}-->
+<!--body {-->
+<!--    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;-->
+<!--    padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));-->
+<!--    min-height: 100vh;-->
+<!--    align-items: center;-->
+<!--    justify-content: center;-->
+<!--}-->
+<!--#wg-app {-->
+<!--    width: 100%;-->
+<!--    max-width: 540px;-->
+<!--    margin: 0 auto;-->
+<!--    text-align: center;-->
+<!--}-->
+<!--#wg-app button,-->
+<!--#wg-app input,-->
+<!--#wg-app select {-->
+<!--    font: inherit;-->
+<!--    -webkit-appearance: none;-->
+<!--    appearance: none;-->
+<!--    text-align: center;-->
+<!--}-->
+<!--#wg-app .wg-banner {-->
+<!--    align-items: center;-->
+<!--    justify-content: center;-->
+<!--    gap: 12px;-->
+<!--    background: rgba(245, 158, 11, 0.14);-->
+<!--    border: 1.5px solid rgba(245, 158, 11, 0.4);-->
+<!--    border-radius: 16px;-->
+<!--    padding: 18px 20px;-->
+<!--    margin-bottom: 32px;-->
+<!--    font-size: 16px;-->
+<!--    font-weight: 500;-->
+<!--    line-height: 24px;-->
+<!--    text-align: center;-->
+<!--}-->
+<!--#wg-app .wg-banner svg {-->
+<!--    flex-shrink: 0;-->
+<!--    width: 24px;-->
+<!--    height: 24px;-->
+<!--}-->
+<!--#wg-app .wg-step {-->
+<!--    display: none;-->
+<!--    animation: 0.3s ease-out forwards wgFadeIn;-->
+<!--}-->
+<!--#wg-app .wg-step.active {-->
+<!--    display: block;-->
+<!--}-->
+
+<!--#wg-app .wg-history-btn {-->
+<!--  position: absolute;-->
+<!--  top: 0;-->
+<!--  right: 0;-->
+<!--  display: flex;-->
+<!--  align-items: center;-->
+<!--  gap: 6px;-->
+<!--  padding: 10px 14px;-->
+<!--  font-size: 14px;-->
+<!--  font-weight: 600;-->
+<!--  color: #1c1c1e;-->
+<!--  background: #fff;-->
+<!--  border: 2px solid #e5e5ea;-->
+<!--  border-radius: 12px;-->
+<!--  cursor: pointer;-->
+<!--  z-index: 10;-->
+<!--  transition: all 0.15s ease;-->
+<!--  touch-action: manipulation;-->
+<!--  -webkit-tap-highlight-color: transparent;-->
+<!--  margin: 20px 20px 0 0;-->
+<!--}-->
+<!--#wg-app .wg-history-btn:active {-->
+<!--  transform: scale(0.95);-->
+<!--  background: #f2f2f7;-->
+<!--}-->
+<!--#wg-app .wg-history-btn svg {-->
+<!--  flex-shrink: 0;-->
+<!--  color: #8e8e93;-->
+<!--}-->
+<!--@keyframes wgFadeIn {-->
+<!--    from {-->
+<!--        opacity: 0;-->
+<!--        transform: translateY(12px);-->
+<!--    }-->
+<!--    to {-->
+<!--        opacity: 1;-->
+<!--        transform: translateY(0);-->
+<!--    }-->
+<!--}-->
+<!--#wg-app .wg-label {-->
+<!--    display: block;-->
+<!--    font-size: 20px;-->
+<!--    font-weight: 700;-->
+<!--    color: #1c1c1e;-->
+<!--    margin-bottom: 16px;-->
+<!--    text-align: center;-->
+<!--}-->
+<!--#wg-app .wg-btn,-->
+<!--#wg-app .wg-input {-->
+<!--    width: 100%;-->
+<!--    font-size: 18px;-->
+<!--    min-height: 64px;-->
+<!--}-->
+<!--#wg-app .wg-input {-->
+<!--    padding: 20px 18px;-->
+<!--    font-weight: 500;-->
+<!--    line-height: 28px;-->
+<!--    border: 2px solid #e5e5ea;-->
+<!--    border-radius: 18px;-->
+<!--    background: #fff;-->
+<!--    color: #1c1c1e;-->
+<!--    outline: 0;-->
+<!--    transition:-->
+<!--        border-color 0.2s,-->
+<!--        box-shadow 0.2s,-->
+<!--        transform 0.15s;-->
+<!--}-->
+<!--#wg-app .wg-input:focus {-->
+<!--    border-color: #1c1c1e;-->
+<!--    box-shadow: 0 0 0 5px rgba(28, 28, 30, 0.08);-->
+<!--    transform: translateY(-2px);-->
+<!--}-->
+<!--#wg-app .wg-input.wg-error {-->
+<!--    border-color: #ff3b30;-->
+<!--}-->
+<!--#wg-app .wg-input::placeholder {-->
+<!--    color: #c7c7cc;-->
+<!--    font-weight: 400;-->
+<!--}-->
+<!--#wg-app select.wg-input {-->
+<!--    padding-right: 48px;-->
+<!--    background-position: right 18px center;-->
+<!--}-->
+<!--#wg-app .wg-btn {-->
+<!--    padding: 20px 16px;-->
+<!--    margin-top: 24px;-->
+<!--    font-weight: 700;-->
+<!--    border: none;-->
+<!--    border-radius: 18px;-->
+<!--    background: #1c1c1e;-->
+<!--    color: #fff;-->
+<!--    cursor: pointer;-->
+<!--    transition:-->
+<!--        opacity 0.2s,-->
+<!--        transform 0.15s,-->
+<!--        box-shadow 0.2s;-->
+<!--    touch-action: manipulation;-->
+<!--    -webkit-tap-highlight-color: transparent;-->
+<!--    letter-spacing: 0.2px;-->
+<!--}-->
+<!--#wg-app .wg-btn:active {-->
+<!--    transform: scale(0.97);-->
+<!--    opacity: 0.85;-->
+<!--}-->
+<!--#wg-app .wg-btn-secondary {-->
+<!--    background: #fff;-->
+<!--    color: #1c1c1e;-->
+<!--    border: 2px solid #e5e5ea;-->
+<!--}-->
+<!--#wg-app .wg-progress {-->
+<!--    display: flex;-->
+<!--    gap: 10px;-->
+<!--    margin-bottom: 36px;-->
+<!--    justify-content: center;-->
+<!--}-->
+<!--#wg-app .wg-dot {-->
+<!--    width: 12px;-->
+<!--    height: 12px;-->
+<!--    border-radius: 50%;-->
+<!--    background: #e5e5ea;-->
+<!--    transition:-->
+<!--        background 0.3s,-->
+<!--        transform 0.3s;-->
+<!--}-->
+<!--#wg-app .wg-dot.active {-->
+<!--    background: #1c1c1e;-->
+<!--    transform: scale(1.3);-->
+<!--}-->
+<!--#wg-app .wg-review-row {-->
+<!--    display: flex;-->
+<!--    flex-direction: column;-->
+<!--    gap: 8px;-->
+<!--    padding: 18px 20px;-->
+<!--    margin-bottom: 14px;-->
+<!--    border: 2px solid #e5e5ea;-->
+<!--    border-radius: 18px;-->
+<!--    background: #fff;-->
+<!--    transition:-->
+<!--        border-color 0.2s,-->
+<!--        box-shadow 0.2s;-->
+<!--    text-align: left;-->
+<!--}-->
+<!--#wg-app .wg-review-row:focus-within {-->
+<!--    border-color: #1c1c1e;-->
+<!--    box-shadow: 0 0 0 5px rgba(28, 28, 30, 0.08);-->
+<!--}-->
+<!--#wg-app .wg-review-label {-->
+<!--    font-size: 14px;-->
+<!--    font-weight: 700;-->
+<!--    color: #8e8e93;-->
+<!--    text-transform: uppercase;-->
+<!--    letter-spacing: 0.5px;-->
+<!--}-->
+<!--#wg-app .wg-review-input {-->
+<!--    border: none;-->
+<!--    background: 0 0;-->
+<!--    padding: 0;-->
+<!--    font-size: 18px;-->
+<!--    font-weight: 600;-->
+<!--    color: #1c1c1e;-->
+<!--    outline: 0;-->
+<!--    width: 100%;-->
+<!--    min-height: 32px;-->
+<!--    text-align: left;-->
+<!--}-->
+<!--#wg-app select.wg-review-input {-->
+<!--    -webkit-appearance: none;-->
+<!--    appearance: none;-->
+<!--    background-position: right 0 center;-->
+<!--    padding-right: 30px;-->
+<!--}-->
+<!--#wg-app .wg-result-box {-->
+<!--    text-align: center;-->
+<!--    padding: 48px 28px;-->
+<!--    border: 2px solid #e5e5ea;-->
+<!--    border-radius: 20px;-->
+<!--    background: #fff;-->
+<!--}-->
+<!--#wg-app .wg-result-number {-->
+<!--    font-size: clamp(48px, 14vw, 64px);-->
+<!--    font-weight: 800;-->
+<!--    line-height: 1.05;-->
+<!--    color: #1c1c1e;-->
+<!--    font-variant-numeric: tabular-nums;-->
+<!--}-->
+<!--#wg-app .wg-result-unit {-->
+<!--    font-size: 20px;-->
+<!--    font-weight: 600;-->
+<!--    color: #8e8e93;-->
+<!--    margin-top: 8px;-->
+<!--}-->
+<!--#wg-app .wg-result-text {-->
+<!--    font-size: 16px;-->
+<!--    line-height: 24px;-->
+<!--    color: #8e8e93;-->
+<!--    margin-top: 20px;-->
+<!--    max-width: 360px;-->
+<!--    margin-left: auto;-->
+<!--    margin-right: auto;-->
+<!--}-->
+<!--#wg-app .wg-btn-group {-->
+<!--    display: flex;-->
+<!--    flex-direction: column;-->
+<!--    gap: 14px;-->
+<!--    margin-top: 24px;-->
+<!--}-->
+<!--#wg-app .wg-btn-group .wg-btn {-->
+<!--    margin-top: 0;-->
+<!--    flex: 1;-->
+<!--}-->
+<!--#wg-app .wg-history-card {-->
+<!--    padding: 18px 20px;-->
+<!--    margin-bottom: 14px;-->
+<!--    background: #fff;-->
+<!--    border: 2px solid #e5e5ea;-->
+<!--    border-radius: 18px;-->
+<!--    text-align: left;-->
+<!--    transition: transform 0.15s ease;-->
+<!--}-->
+<!--#wg-app .wg-history-card:active {-->
+<!--    transform: scale(0.98);-->
+<!--}-->
+<!--#wg-app .wg-history-empty {-->
+<!--    text-align: center;-->
+<!--    color: #8e8e93;-->
+<!--    padding: 48px 20px;-->
+<!--    font-size: 17px;-->
+<!--    font-weight: 500;-->
+<!--}-->
+<!--#wg-app .wg-history-header {-->
+<!--    display: flex;-->
+<!--    justify-content: space-between;-->
+<!--    align-items: center;-->
+<!--    margin-bottom: 8px;-->
+<!--}-->
+<!--#wg-app .wg-history-name {-->
+<!--    font-size: 18px;-->
+<!--    font-weight: 700;-->
+<!--    color: #1c1c1e;-->
+<!--}-->
+<!--#wg-app .wg-history-weight {-->
+<!--    font-size: 24px;-->
+<!--    font-weight: 800;-->
+<!--    color: #1c1c1e;-->
+<!--}-->
+<!--#wg-app .wg-history-weight span {-->
+<!--    font-size: 14px;-->
+<!--    font-weight: 600;-->
+<!--    color: #8e8e93;-->
+<!--}-->
+<!--#wg-app .wg-history-meta {-->
+<!--    font-size: 14px;-->
+<!--    color: #8e8e93;-->
+<!--    line-height: 20px;-->
+<!--}-->
+<!--#wg-app .wg-history-date {-->
+<!--    font-size: 12px;-->
+<!--    color: #c7c7cc;-->
+<!--    margin-top: 6px;-->
+<!--}-->
+<!--#wg-app @media (min-width:600px) {-->
+<!--    body {-->
+<!--        padding: 32px 24px;-->
+<!--    }-->
+<!--    #wg-app {-->
+<!--        max-width: 480px;-->
+<!--    }-->
+<!--    #wg-app .wg-label {-->
+<!--        font-size: 22px;-->
+<!--    }-->
+<!--    #wg-app .wg-btn,-->
+<!--    #wg-app .wg-input {-->
+<!--        font-size: 19px;-->
+<!--        padding: 22px 20px;-->
+<!--    }-->
+<!--    #wg-app .wg-btn-group {-->
+<!--        flex-direction: row;-->
+<!--    }-->
+<!--    #wg-app .wg-result-number {-->
+<!--        font-size: 64px;-->
+<!--    }-->
+<!--}-->
+<!--@media (min-width: 900px) {-->
+<!--    #wg-app {-->
+<!--        max-width: 500px;-->
+<!--    }-->
+<!--    #wg-app .wg-label {-->
+<!--        font-size: 24px;-->
+<!--    }-->
+<!--}-->
+<!--</style>-->
+<!--<base target="_blank">-->
+<!--<base target="_blank">-->
+<!--</head>-->
+<!--<body>-->
+<!--<div id="wg-app">-->
+<!--  <button class="wg-history-btn" onclick="renderHistory(); showStep(7);" title="View history">-->
+<!--    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--      <circle cx="12" cy="12" r="10"></circle>-->
+<!--      <polyline points="12 6 12 12 16 14"></polyline>-->
+<!--    </svg>-->
+<!--    <span>History</span>-->
+<!--  </button>-->
+<!--  <div class="wg-banner">-->
+<!--    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:#f59e0b;">-->
+<!--      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>-->
+<!--      <line x1="12" y1="9" x2="12" y2="13"></line>-->
+<!--      <line x1="12" y1="17" x2="12.01" y2="17"></line>-->
+<!--    </svg>-->
+<!--    <span>If you enter something wrong, at the end you will check everything you entered and change it if you wish.</span>-->
+<!--  </div>-->
+
+<!--  <div class="wg-progress" id="wg-progress"></div>-->
+
+<!--  <div id="wg-step-0" class="wg-step active">-->
+<!--    <label class="wg-label">What is your name?</label>-->
+<!--    <input type="text" class="wg-input" id="inp-name" placeholder="e.g. Alex" autocomplete="off">-->
+<!--    <button class="wg-btn" onclick="wgNext()">Next</button>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-1" class="wg-step">-->
+<!--    <label class="wg-label">What is your surname?</label>-->
+<!--    <input type="text" class="wg-input" id="inp-surname" placeholder="e.g. Smith" autocomplete="off">-->
+<!--    <button class="wg-btn" onclick="wgNext()">Next</button>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-2" class="wg-step">-->
+<!--    <label class="wg-label">What is your date of birth?</label>-->
+<!--    <input type="text" class="wg-input" id="inp-dob" placeholder="dd/mm/yyyy" maxlength="10" autocomplete="off">-->
+<!--    <button class="wg-btn" onclick="wgNext()">Next</button>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-3" class="wg-step">-->
+<!--    <label class="wg-label">What is your height? (cm)</label>-->
+<!--    <input type="text" class="wg-input" id="inp-height" placeholder="e.g. 175" inputmode="numeric" autocomplete="off">-->
+<!--    <button class="wg-btn" onclick="wgNext()">Next</button>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-4" class="wg-step">-->
+<!--    <label class="wg-label">What is your gender?</label>-->
+<!--    <select class="wg-input" id="inp-gender">-->
+<!--      <option value="" disabled selected>Select gender</option>-->
+<!--      <option value="male">Male</option>-->
+<!--      <option value="female">Female</option>-->
+<!--      <option value="other">Other / Prefer not to say</option>-->
+<!--    </select>-->
+<!--    <button class="wg-btn" onclick="wgNext()">Next</button>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-5" class="wg-step">-->
+<!--    <div style="font-size:20px; font-weight:700; margin-bottom:20px;">Review your information</div>-->
+<!--    <div class="wg-review-row">-->
+<!--      <span class="wg-review-label">Name</span>-->
+<!--      <input type="text" class="wg-review-input" id="rev-name" autocomplete="off">-->
+<!--    </div>-->
+<!--    <div class="wg-review-row">-->
+<!--      <span class="wg-review-label">Surname</span>-->
+<!--      <input type="text" class="wg-review-input" id="rev-surname" autocomplete="off">-->
+<!--    </div>-->
+<!--    <div class="wg-review-row">-->
+<!--      <span class="wg-review-label">Date of birth (dd/mm/yyyy)</span>-->
+<!--      <input type="text" class="wg-review-input" id="rev-dob" maxlength="10" autocomplete="off">-->
+<!--    </div>-->
+<!--    <div class="wg-review-row">-->
+<!--      <span class="wg-review-label">Height (cm)</span>-->
+<!--      <input type="text" class="wg-review-input" id="rev-height" inputmode="numeric" autocomplete="off">-->
+<!--    </div>-->
+<!--    <div class="wg-review-row">-->
+<!--      <span class="wg-review-label">Gender</span>-->
+<!--      <select class="wg-review-input" id="rev-gender" style="border:none; background:transparent; font-size:18px; color:#1c1c1e; outline:none; padding:0; width:100%;">-->
+<!--        <option value="male">Male</option>-->
+<!--        <option value="female">Female</option>-->
+<!--        <option value="other">Other / Prefer not to say</option>-->
+<!--      </select>-->
+<!--    </div>-->
+<!--    <div class="wg-btn-group">-->
+<!--      <button class="wg-btn wg-btn-secondary" onclick="wgRestart()">Start over</button>-->
+<!--      <button class="wg-btn" onclick="wgConfirm()">Looks good — guess my weight</button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-6" class="wg-step">-->
+<!--    <div class="wg-result-box">-->
+<!--      <div style="font-size:15px; color:#8e8e93; margin-bottom:10px; font-weight:500;">Based on your data, your approximate weight is</div>-->
+<!--      <div class="wg-result-number" id="wg-result-num">&#45;&#45;</div>-->
+<!--      <div class="wg-result-unit">kilograms</div>-->
+<!--      <div class="wg-result-text" id="wg-result-desc"></div>-->
+<!--    </div>-->
+<!--    <div class="wg-btn-group" style="margin-top:24px;">-->
+<!--      <button class="wg-btn wg-btn-secondary" onclick="wgBackToReview()">Edit my info</button>-->
+<!--      <button class="wg-btn" onclick="renderHistory(); showStep(7);">View history</button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  <div id="wg-step-7" class="wg-step">-->
+<!--    <div style="font-size:20px; font-weight:700; margin-bottom:24px;">Your History</div>-->
+<!--    <div id="wg-history-list"></div>-->
+<!--    <div class="wg-btn-group" style="margin-top:24px;">-->
+<!--      <button class="wg-btn wg-btn-secondary" onclick="wgRestart()">Start new guess</button>-->
+<!--      <button class="wg-btn" onclick="clearHistory(); renderHistory();" style="background:#ff3b30;">Clear all history</button>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<script>-->
+<!--(function(){-->
+<!--  const HISTORY_KEY = 'wg_history';-->
+
+<!--  function getHistory() {-->
+<!--    const raw = localStorage.getItem(HISTORY_KEY);-->
+<!--    return raw ? JSON.parse(raw) : [];-->
+<!--  }-->
+
+<!--  function saveToHistory(entry) {-->
+<!--    const history = getHistory();-->
+<!--    entry.id = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);-->
+<!--    entry.savedAt = new Date().toISOString();-->
+<!--    history.unshift(entry);-->
+<!--    if (history.length > 50) history.pop();-->
+<!--    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));-->
+<!--  }-->
+
+<!--  window.clearHistory = function() {-->
+<!--    if (confirm('Are you sure you want to delete all your history?')) {-->
+<!--      localStorage.removeItem(HISTORY_KEY);-->
+<!--    }-->
+<!--  }-->
+
+<!--  window.renderHistory = function() {-->
+<!--    const list = document.getElementById('wg-history-list');-->
+<!--    const history = getHistory();-->
+
+<!--    if (history.length === 0) {-->
+<!--      list.innerHTML = '<div class="wg-history-empty">No history yet.<br>Make your first guess!</div>';-->
+<!--      return;-->
+<!--    }-->
+
+<!--    list.innerHTML = history.map(function(h) {-->
+<!--      return '<div class="wg-history-card">' +-->
+<!--        '<div class="wg-history-header">' +-->
+<!--          '<span class="wg-history-name">' + h.name + ' ' + h.surname + '</span>' +-->
+<!--          '<span class="wg-history-weight">' + h.weight.toFixed(1) + ' <span>kg</span></span>' +-->
+<!--        '</div>' +-->
+<!--        '<div class="wg-history-meta">' + h.height + ' cm &middot; ' + h.age + ' yrs &middot; ' + h.gender + ' &middot; ' + h.dob + '</div>' +-->
+<!--        '<div class="wg-history-date">' + new Date(h.savedAt).toLocaleString() + '</div>' +-->
+<!--      '</div>';-->
+<!--    }).join('');-->
+<!--  };-->
+
+<!--  const steps = 8;-->
+<!--  let current = 0;-->
+<!--  const progressEl = document.getElementById('wg-progress');-->
+
+<!--  function renderDots(){-->
+<!--    progressEl.innerHTML = '';-->
+<!--    for(let i=0;i<5;i++){-->
+<!--      const d = document.createElement('div');-->
+<!--      d.className = 'wg-dot' + (i===current ? ' active' : '');-->
+<!--      progressEl.appendChild(d);-->
+<!--    }-->
+<!--  }-->
+<!--  renderDots();-->
+
+<!--  window.showStep = function(n){-->
+<!--    for(let i=0;i<steps;i++){-->
+<!--      document.getElementById('wg-step-'+i).classList.toggle('active', i===n);-->
+<!--    }-->
+<!--    current = n;-->
+<!--    renderDots();-->
+<!--  };-->
+
+<!--  function setError(id, err){-->
+<!--    const el = document.getElementById(id);-->
+<!--    if(err) el.classList.add('wg-error');-->
+<!--    else el.classList.remove('wg-error');-->
+<!--  }-->
+
+<!--  function isValidDate(str){-->
+<!--    const parts = str.split('/');-->
+<!--    if(parts.length!==3) return false;-->
+<!--    const d=parseInt(parts[0],10), m=parseInt(parts[1],10), y=parseInt(parts[2],10);-->
+<!--    if(isNaN(d)||isNaN(m)||isNaN(y)) return false;-->
+<!--    if(d<1||d>31||m<1||m>12||y<1900||y>2100) return false;-->
+<!--    const date = new Date(y, m-1, d);-->
+<!--    return date.getDate()===d && date.getMonth()===m-1 && date.getFullYear()===y;-->
+<!--  }-->
+
+<!--  function parseDate(str){-->
+<!--    const [d,m,y] = str.split('/').map(Number);-->
+<!--    return new Date(y, m-1, d);-->
+<!--  }-->
+
+<!--  document.getElementById('inp-name').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^a-zA-Z\s\-\']/g, '');-->
+<!--  });-->
+<!--  document.getElementById('inp-surname').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^a-zA-Z\s\-\']/g, '');-->
+<!--  });-->
+<!--  document.getElementById('inp-height').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^0-9]/g, '');-->
+<!--  });-->
+<!--  document.getElementById('inp-dob').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^0-9\/]/g, '');-->
+<!--  });-->
+
+<!--  document.getElementById('rev-name').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^a-zA-Z\s\-\']/g, '');-->
+<!--  });-->
+<!--  document.getElementById('rev-surname').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^a-zA-Z\s\-\']/g, '');-->
+<!--  });-->
+<!--  document.getElementById('rev-height').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^0-9]/g, '');-->
+<!--  });-->
+<!--  document.getElementById('rev-dob').addEventListener('input', function(e){-->
+<!--    e.target.value = e.target.value.replace(/[^0-9\/]/g, '');-->
+<!--  });-->
+
+<!--  window.wgNext = function(){-->
+<!--    const ids = ['inp-name','inp-surname','inp-dob','inp-height','inp-gender'];-->
+<!--    const el = document.getElementById(ids[current]);-->
+<!--    const val = el.value.trim();-->
+<!--    setError(ids[current], false);-->
+
+<!--    if(!val){ alert('Please fill in this field.'); setError(ids[current], true); return; }-->
+
+<!--    if(current===0 || current===1){-->
+<!--      if(/\d/.test(val)){ alert('Please use letters only.'); setError(ids[current], true); return; }-->
+<!--    }-->
+<!--    if(current===2){-->
+<!--      if(!isValidDate(val)){ alert('Please enter a valid date in dd/mm/yyyy format.'); setError(ids[current], true); return; }-->
+<!--    }-->
+<!--    if(current===3){-->
+<!--      const h=parseFloat(val);-->
+<!--      if(isNaN(h)||h<50||h>300){ alert('Please enter a valid height between 50 and 300 cm.'); setError(ids[current], true); return; }-->
+<!--    }-->
+
+<!--    if(current===4){-->
+<!--      document.getElementById('rev-name').value = document.getElementById('inp-name').value.trim();-->
+<!--      document.getElementById('rev-surname').value = document.getElementById('inp-surname').value.trim();-->
+<!--      document.getElementById('rev-dob').value = document.getElementById('inp-dob').value.trim();-->
+<!--      document.getElementById('rev-height').value = document.getElementById('inp-height').value.trim();-->
+<!--      document.getElementById('rev-gender').value = document.getElementById('inp-gender').value;-->
+<!--    }-->
+<!--    window.showStep(current+1);-->
+<!--  };-->
+
+<!--  window.showStep = showStep;-->
+
+<!--  window.wgConfirm = function(){-->
+<!--    const name = document.getElementById('rev-name').value.trim();-->
+<!--    const surname = document.getElementById('rev-surname').value.trim();-->
+<!--    const dobStr = document.getElementById('rev-dob').value.trim();-->
+<!--    const heightVal = document.getElementById('rev-height').value.trim();-->
+<!--    const gender = document.getElementById('rev-gender').value;-->
+
+<!--    if(!name||!surname||!dobStr||!heightVal||!gender){ alert('Please fill in all fields.'); return; }-->
+<!--    if(/\d/.test(name)||/\d/.test(surname)){ alert('Name and surname should contain only letters.'); return; }-->
+<!--    if(!isValidDate(dobStr)){ alert('Please enter a valid date of birth in dd/mm/yyyy format.'); return; }-->
+<!--    const height = parseFloat(heightVal);-->
+<!--    if(isNaN(height)||height<50||height>300){ alert('Please enter a valid height between 50 and 300 cm.'); return; }-->
+
+<!--    const birth = parseDate(dobStr);-->
+<!--    const now = new Date();-->
+<!--    let age = now.getFullYear() - birth.getFullYear();-->
+<!--    const m = now.getMonth() - birth.getMonth();-->
+<!--    if(m<0 || (m===0 && now.getDate() < birth.getDate())) age&#45;&#45;;-->
+<!--    if(age<0) age=0;-->
+
+<!--    let heightInMetres = height / 100;-->
+<!--    let targetBmi;-->
+<!--    if (age < 18) {-->
+<!--      targetBmi = 20.5;-->
+<!--    } else {-->
+<!--      if (gender == "male") targetBmi = 22.0;-->
+<!--      else if (gender == "female") targetBmi = 21.5;-->
+<!--      else targetBmi = 21.7;-->
+<!--    }-->
+
+<!--    let idealWeight = targetBmi * (heightInMetres * heightInMetres);-->
+<!--    if (age > 30) idealWeight = idealWeight * 1.05;-->
+
+<!--    // Save to history-->
+<!--    saveToHistory({-->
+<!--      name: name,-->
+<!--      surname: surname,-->
+<!--      gender: gender,-->
+<!--      dob: dobStr,-->
+<!--      height: height,-->
+<!--      weight: idealWeight,-->
+<!--      age: age-->
+<!--    });-->
+
+<!--    document.getElementById('wg-result-num').textContent = idealWeight.toFixed(1);-->
+<!--    document.getElementById('wg-result-desc').textContent =-->
+<!--      'Hey ' + name + ', at ' + height + ' cm tall and ' + age + ' years old, this is our best statistical guess. Remember: it\'s just an estimate!';-->
+<!--    window.showStep(6);-->
+<!--  };-->
+
+<!--  window.wgRestart = function(){-->
+<!--    ['inp-name','inp-surname','inp-dob','inp-height','inp-gender'].forEach(function(id){ document.getElementById(id).value=''; });-->
+<!--    window.showStep(0);-->
+<!--  };-->
+
+<!--  window.wgBackToReview = function(){-->
+<!--    window.showStep(5);-->
+<!--  };-->
+<!--})();-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
